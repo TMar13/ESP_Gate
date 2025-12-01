@@ -1,0 +1,241 @@
+esphome:
+  name: esp-portail
+  friendly_name: Esp_Portail
+
+esp8266:
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "mykey"
+
+ota:
+  - platform: esphome
+    password: "mypassword"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+ 
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "mon Hotspot"
+    password: "mon password"
+
+  #ptional manual IP
+  manual_ip:
+    static_ip: 192.168.1.xxx
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+  reboot_timeout: 5min
+
+web_server:
+  port: 80
+  version: 3
+  sorting_groups:
+    - id: groupe_etats
+      name: "Etats"
+      sorting_weight: 10
+    - id: groupe_commandes
+      name: "Commandes"
+      sorting_weight: 20
+
+switch:
+# Led sur la carte 
+  - platform: gpio
+    pin: D0
+    id: led
+    name: "Led Ouvert"
+    restore_mode: ALWAYS_OFF
+# Led ESP Bleue
+  - platform: gpio
+    pin: D4
+    id: ledbleu
+    name: "Led Bleu"
+    inverted: true
+# Relais de commande ouverture commande a letat 0
+  - platform: gpio
+    pin: D1
+    id: ouvrir
+    name: "Ouvrir"
+    icon: "mdi:gate"
+    inverted: true
+    restore_mode: ALWAYS_ON
+    on_turn_on:
+      then:
+      - delay: 500 ms
+      - switch.turn_off: ouvrir
+    web_server:
+      sorting_group_id: groupe_commandes
+# Relais de commande ouverture partielle a l'etat 0
+  - platform: gpio
+    pin: D2
+    id: partiel
+    name: "Partiel"
+    icon: "mdi:gate"
+    inverted: true
+    restore_mode: ALWAYS_ON
+    on_turn_on:
+      then:
+      - delay: 500 ms
+      - switch.turn_off: partiel
+    web_server:
+      sorting_group_id: groupe_commandes
+# led bleu clignotante
+  - platform: template
+    name: "LED Bleu lent"
+    optimistic: yes
+    id: bleulent
+    turn_on_action:
+    - while:
+        condition:
+          lambda: 'return true;'
+        then:
+        - switch.turn_on: ledbleu
+        - delay: 500ms 
+        - switch.turn_off: ledbleu
+        - delay: 500ms
+    turn_off_action:
+    - switch.turn_off: ledbleu
+# led bleu clignotante rapide
+  - platform: template
+    name: "LED Bleu rapide"
+    optimistic: yes
+    id: bleurapide
+    turn_on_action:
+    - while:
+        condition:
+          lambda: 'return true;'
+        then:
+        - switch.turn_on: ledbleu
+        - delay: 200ms 
+        - switch.turn_off: ledbleu
+        - delay: 200ms
+    turn_off_action:
+    - switch.turn_off: ledbleu
+# led carte clignotante
+  - platform: template
+    name: "LED lent"
+    optimistic: yes
+    id: ledlent
+    turn_on_action:
+    - while:
+        condition:
+          lambda: 'return true;'
+        then:
+        - switch.turn_on: led
+        - delay: 500ms 
+        - switch.turn_off: led
+        - delay: 500ms
+    turn_off_action:
+    - switch.turn_off: led
+# led carte clignotante rapide
+  - platform: template
+    name: "LED rapide"
+    optimistic: yes
+    id: ledrapide
+    turn_on_action:
+    - while:
+        condition:
+          lambda: 'return true;'
+        then:
+        - switch.turn_on: led
+        - delay: 200ms 
+        - switch.turn_off: led
+        - delay: 200ms
+    turn_off_action:
+    - switch.turn_off: led
+# Statud
+
+binary_sensor:
+  - platform: status
+    name: "$friendly_name Status"
+# Etat donne par le portail ouvert
+# passe a 1 des debut ouverture
+  - platform: gpio
+    pin:
+      number: D3
+      inverted: true
+      mode:
+        input: true #entrée
+    id: ouverture
+    name: "Ouverture"
+    filters:
+      delayed_on_off: 1s
+    on_press:
+      then:
+      - switch.turn_on: ledlent
+    on_release:
+      then:
+      - binary_sensor.template.publish:
+          id: ouvfer
+          state: on
+      - switch.turn_off: ledlent
+    web_server:
+      sorting_group_id: groupe_etats
+#Etat ferme donne par le portail
+# Passe a 0 que si totalement ouvert
+  - platform: gpio
+    pin:
+      number: D6
+      inverted: true
+      mode:
+        input: true #entrée
+    id: fermeture
+    name: "Fermeture"
+    filters:
+      delayed_on_off: 1s
+    on_press: 
+      then:
+      - switch.turn_on: ledrapide
+    on_release: 
+      then:   
+      - binary_sensor.template.publish:
+          id: ouvfer
+          state: off
+      - switch.turn_off: ledrapide 
+    web_server:
+      sorting_group_id: groupe_etats            
+#Entree de bouton qui permet l'ouverture
+  - platform: gpio
+    pin:
+      number: D5
+      inverted: true # inversé : 1 quand appuyé
+      mode:
+        input: true #entrée
+        pullup: true
+    id: bouton_ouv
+    name: "Bouton Ouvrir"
+    filters:
+      delayed_on_off: 100ms
+    on_press:
+      then:
+      - delay: 500 ms
+      - switch.turn_on: ouvrir
+# entree de bouton pour ouverture partielle
+  - platform: gpio
+    pin:
+      number: D7
+      inverted: true # inversé : 1 quand appuyé
+      mode:
+        input: true #entrée
+        pullup: true
+    id: bouton_part
+    name: "Bouton Partiel"
+    filters:
+      delayed_on_off: 100ms
+    on_press:
+      then:
+      - delay: 500 ms
+      - switch.turn_on: partiel
+#Etat ouvert/fermé
+  - platform: template
+    id: ouvfer
+    name: "On-Off"
+    web_server:
+      sorting_group_id: groupe_etats
+captive_portal:
