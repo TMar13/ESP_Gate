@@ -11,6 +11,7 @@ List of files:
 - PCB files: available from PCBway at competitive prices
 - Electronic schematic (ignore component part numbers)
 - STL Box
+- Gate states flowchart
 
 
 Carte de pilotage de portail à base d'ESP8266
@@ -26,3 +27,4 @@ Liste des fichiers :
 - fichiers PCB : vous pouvez vous fournir chez PCBway à tarif intéressant
 - fichier STL pour boite
 - schéma électronique (ne pas tenir compte des références des composants)
+- logigramme des états du prtail
