@@ -8,7 +8,7 @@ ESP Board for gate control
 List of files:
 - YAML code
 - Component list and layout
-- PCB files: available from PCBway at competitive prices
+- PCB files: PCB available at PCBway.fr at a competitive prices
 - Electronic schematic (ignore component part numbers)
 - STL Box
 - Gate states flowchart
@@ -24,7 +24,7 @@ Carte de pilotage de portail à base d'ESP8266
 Liste des fichiers :
 - code YAML
 - liste des composants et implantation
-- fichiers PCB : vous pouvez vous fournir chez PCBway à tarif intéressant
+- fichiers PCB : vous pouvez vous fournir chez PCBway.fr à tarif intéressant
 - fichier STL pour boite
 - schéma électronique (ne pas tenir compte des références des composants)
 - logigramme des états du prtail
