@@ -10,6 +10,7 @@ List of files:
 - Component list and layout
 - PCB files: available from PCBway at competitive prices
 - Electronic schematic (ignore component part numbers)
+- STL Box
 
 
 Carte de pilotage de portail à base d'ESP8266
@@ -22,5 +23,6 @@ Carte de pilotage de portail à base d'ESP8266
 Liste des fichiers :
 - code YAML
 - liste des composants et implantation
-- fichiers PCB : vous pouvez vous fournir chez PCBway à tarif intéressant 
+- fichiers PCB : vous pouvez vous fournir chez PCBway à tarif intéressant
+- fichier STL pour boite
 - schéma électronique (ne pas tenir compte des références des composants)
