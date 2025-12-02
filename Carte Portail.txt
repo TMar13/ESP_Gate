@@ -1,0 +1,21 @@
+type: custom:button-card
+show_name: true
+show_icon: true
+tap_action:
+action: toggle
+entity: switch.esp-portail_ouvrir
+show_state: false
+styles:
+icon:
+  - height: 100px
+  - color: |
+      [[[
+        if (states['binary_sensor.esp-portail_ouvert'].state == 'off') &&  (states['binary_sensor.esp-portail_ferme'].state == 'on')) return 'rgb(0,100,0)'; # vert
+        if (states['binary_sensor.esp-portail_ouvert'].state == 'on) return 'rgb(255,0,0)'; #rouge
+      ]]]    
+card:
+  - animation: |
+      [[[
+        if (states['binary_sensor.esp-portail_ouverture'].state == 'on') return "blink 1s ease infinite";
+        if (states['binary_sensor.esp-portail_fermeture'].state == 'on') return "blink 1s ease infinite";
+      ]]]
