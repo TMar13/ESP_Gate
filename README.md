@@ -1,7 +1,7 @@
 ESP Board for gate control
 
 2 control relays (opening and partial opening)
-2 24 V DC-AC  states - you can use 12V or other by adjusting R1 and R2 (10 mA optocoupler bias). It supports a dry contact imput on B3 (use 2 jumpers : see implantaion;jpg)
+2 24 V DC-AC  states - you can use 12V or other by adjusting R1 and R2 (10 mA optocoupler bias). It supports a dry contact imput on B3 (use 2 jumpers : see implantaion.jpg)
 2 buttons for commands (opening and partial opening)
 1 ESP 8266 for driving and home assistant interface
 
